@@ -15,3 +15,11 @@ parts:
   - caption: Day-2
     chapters:
     - file: Day-2/nb-1
+    - file: Day-2/nb-2
+  - caption: Day-3
+    chapters:
+    - file: Day-3/nb-1
+    - file: Day-3/nb-2
+  - caption: Day-4
+    chapters:
+    - file: Day-4/nb-1
