@@ -23,3 +23,6 @@ parts:
   - caption: Day-4
     chapters:
     - file: Day-4/nb-1
+  - caption: OPPE
+    chapters:
+    - file: OPPE/nb-sample
