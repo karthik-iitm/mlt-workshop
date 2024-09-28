@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -191,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Day-2/nb-1.html">Principal Component Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Day-2/nb-2.html">K-Means Algorithm</a></li>
 
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Day-3</span></p>
 <ul class="current nav bd-sidenav">
@@ -201,6 +202,10 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Day-4</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../Day-4/nb-1.html">Support Vector Machines</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">OPPE</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../OPPE/nb-sample.html">MLT | OPPE | Sample Questions</a></li>
 </ul>
 
     </div>
@@ -410,7 +415,8 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Ridge regression</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Normal equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regualarized-loss-function">Regualarized Loss function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-form-solution">Closed Form Solution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-and-compare">Visualize and Compare</a></li>
 </ul>
 </li>
@@ -576,14 +582,12 @@ document.write(`
 <span class="n">valid_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">,</span> <span class="n">w_linear</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Train loss = </span><span class="si">{</span><span class="n">train_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validation loss = </span><span class="si">{</span><span class="n">valid_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Discrepancy ratio = </span><span class="si">{</span><span class="n">valid_loss</span><span class="o">/</span><span class="n">train_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train loss = 1.2308985803562101e-17
 Validation loss = 6193096.573388016
-Discrepancy ratio = 5.031362187123324e+23
 </pre></div>
 </div>
 </div>
@@ -593,6 +597,8 @@ Discrepancy ratio = 5.031362187123324e+23
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="id2">
 <h1>Ridge regression<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
+<section id="regualarized-loss-function">
+<h2>Regualarized Loss function<a class="headerlink" href="#regualarized-loss-function" title="Link to this heading">#</a></h2>
 <p>Recall that ridge regression tries to minimize the regularized loss function given by:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -601,8 +607,21 @@ L(\mathbf{X} ,\mathbf{y} ,\mathbf{w}) =\frac{1}{2}\sum\limits _{i=1}^{n}\left(\m
 \end{equation*}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\lambda\)</span> is the regularization rate.</p>
-<section id="id3">
-<h2>Normal equations<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">lamb</span><span class="p">):</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">w</span> <span class="o">-</span> <span class="n">y</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">err</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">lamb</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="closed-form-solution">
+<h2>Closed Form Solution<a class="headerlink" href="#closed-form-solution" title="Link to this heading">#</a></h2>
 <p>Since ridge regression makes use of the <span class="math notranslate nohighlight">\(L_2\)</span> loss, we still have a closed form expression for the optimal weight vector:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -623,7 +642,7 @@ L(\mathbf{X} ,\mathbf{y} ,\mathbf{w}) =\frac{1}{2}\sum\limits _{i=1}^{n}\left(\m
     <span class="n">X_train</span><span class="p">,</span>
     <span class="n">y_train</span><span class="p">,</span>
     <span class="n">lamb</span> <span class="o">=</span> <span class="mf">0.01</span>
-    <span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -634,19 +653,18 @@ L(\mathbf{X} ,\mathbf{y} ,\mathbf{w}) =\frac{1}{2}\sum\limits _{i=1}^{n}\left(\m
 <p>Let us now visualize the regression curve and also study the training and validation losses.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">w_ridge</span><span class="p">)</span>
-<span class="n">train_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">)</span>
-<span class="n">valid_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lamb</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">visualize</span><span class="p">(</span><span class="n">w_ridge</span><span class="p">)</span>
+<span class="n">train_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">,</span> <span class="n">lamb</span><span class="p">)</span>
+<span class="n">valid_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">,</span> <span class="n">lamb</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Train loss = </span><span class="si">{</span><span class="n">train_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validation loss = </span><span class="si">{</span><span class="n">valid_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Discrepancy ratio = </span><span class="si">{</span><span class="n">valid_loss</span><span class="o">/</span><span class="n">train_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train loss = 0.8788816137771218
-Validation loss = 1.8338200352081455
-Discrepancy ratio = 2.0865381713095994
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train loss = 1.5049510776098285
+Validation loss = 2.459889499040852
 </pre></div>
 </div>
 <img alt="../_images/23f26ac2ec4a8a175653a401ecdafa392b1b44e5be7c0c6ab28f4cb62a6679ee.png" src="../_images/23f26ac2ec4a8a175653a401ecdafa392b1b44e5be7c0c6ab28f4cb62a6679ee.png" />
@@ -670,12 +688,14 @@ Discrepancy ratio = 2.0865381713095994
     <span class="n">train_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">(</span>
         <span class="n">X_train</span><span class="p">,</span>
         <span class="n">y_train</span><span class="p">,</span>
-        <span class="n">w_ridge</span><span class="p">)</span>
+        <span class="n">w_ridge</span><span class="p">,</span>
+        <span class="n">lamb</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">valid_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">(</span>
         <span class="n">X_valid</span><span class="p">,</span>
         <span class="n">y_valid</span><span class="p">,</span>
-        <span class="n">w_ridge</span><span class="p">)</span>
+        <span class="n">w_ridge</span><span class="p">,</span>
+        <span class="n">lamb</span><span class="p">)</span>
     <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="mi">1</span> <span class="o">/</span> <span class="n">lambs</span><span class="p">,</span>
@@ -703,49 +723,47 @@ Discrepancy ratio = 2.0865381713095994
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 10.0)
 </pre></div>
 </div>
-<img alt="../_images/4fad4db5def335ac5ac9988bee3a1965de2f013203cf8d20967c34cad0d69bf2.png" src="../_images/4fad4db5def335ac5ac9988bee3a1965de2f013203cf8d20967c34cad0d69bf2.png" />
+<img alt="../_images/aa076211e564d9e652137ff2036e885b8ea15cc7f48e9032532cd6e5c74183f7.png" src="../_images/aa076211e564d9e652137ff2036e885b8ea15cc7f48e9032532cd6e5c74183f7.png" />
 </div>
 </div>
 <p>Though this is not a classic curve between the loss function and the model complexity, it at least captures the rough behaviour of the model as <span class="math notranslate nohighlight">\(\lambda\)</span> is varied. In the case of ridge regression, the model complexity is represented by <span class="math notranslate nohighlight">\(1 / \lambda\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_lambda</span> <span class="o">=</span> <span class="n">lambs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">valid_losses</span><span class="p">)]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_lamb</span> <span class="o">=</span> <span class="n">lambs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">valid_losses</span><span class="p">)]</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best validation loss = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">valid_losses</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best lambda = </span><span class="si">{</span><span class="n">best_lambda</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best lambda = </span><span class="si">{</span><span class="n">best_lamb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Best validation loss = 0.38625108199854535
-Best lambda = 9e-05
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Best validation loss = 0.4139661798805553
+Best lambda = 1e-07
 </pre></div>
 </div>
 </div>
 </div>
-<p>Thus, the best value of <span class="math notranslate nohighlight">\(\lambda\)</span> turns out to be <span class="math notranslate nohighlight">\(9 \times 10^{-5}\)</span>.</p>
+<p>Thus, the best value of <span class="math notranslate nohighlight">\(\lambda\)</span> turns out to be <span class="math notranslate nohighlight">\(10^{-7}\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w_ridge</span> <span class="o">=</span> <span class="n">get_w_ridge</span><span class="p">(</span>
     <span class="n">X_train</span><span class="p">,</span>
     <span class="n">y_train</span><span class="p">,</span>
-    <span class="n">lamb</span> <span class="o">=</span> <span class="n">best_lambda</span>
-    <span class="p">)</span>
+    <span class="n">lamb</span> <span class="o">=</span> <span class="n">best_lamb</span>
+<span class="p">)</span>
 <span class="n">visualize</span><span class="p">(</span><span class="n">w_ridge</span><span class="p">)</span>
-<span class="n">train_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">)</span>
-<span class="n">valid_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">)</span>
+<span class="n">train_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">,</span> <span class="n">best_lamb</span><span class="p">)</span>
+<span class="n">valid_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">,</span> <span class="n">w_ridge</span><span class="p">,</span> <span class="n">best_lamb</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Train loss = </span><span class="si">{</span><span class="n">train_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validation loss = </span><span class="si">{</span><span class="n">valid_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Discrepancy ratio = </span><span class="si">{</span><span class="n">valid_loss</span><span class="o">/</span><span class="n">train_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train loss = 0.05442212062390368
-Validation loss = 0.38625108199854535
-Discrepancy ratio = 7.097317737171993
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train loss = 0.03724601299739057
+Validation loss = 0.4139661798805553
 </pre></div>
 </div>
-<img alt="../_images/91dee1fd51cd6cdde592668603cdc8d1a314567b857960ce054d078429d76231.png" src="../_images/91dee1fd51cd6cdde592668603cdc8d1a314567b857960ce054d078429d76231.png" />
+<img alt="../_images/2613c6faad72c060c40eb62c3b86b1442e5263e7d5b08ead8af6ebb5c1d255c5.png" src="../_images/2613c6faad72c060c40eb62c3b86b1442e5263e7d5b08ead8af6ebb5c1d255c5.png" />
 </div>
 </div>
 </section>
@@ -829,7 +847,8 @@ Discrepancy ratio = 7.097317737171993
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Ridge regression</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Normal equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regualarized-loss-function">Regualarized Loss function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-form-solution">Closed Form Solution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-and-compare">Visualize and Compare</a></li>
 </ul>
 </li>
