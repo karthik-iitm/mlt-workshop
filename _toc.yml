@@ -26,3 +26,4 @@ parts:
   - caption: OPPE
     chapters:
     - file: OPPE/nb-sample
+    - file: OPPE/nb-oppe
